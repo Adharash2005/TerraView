@@ -64,12 +64,6 @@ Provides map tiles for displaying geographical information.
 
 Website: https://www.openstreetmap.org/
 
-### Overpass API (Optional)
-
-Used to retrieve nearby points of interest, such as restaurants, parks, and other facilities, if this feature is implemented.
-
-Website: https://overpass-api.de/
-
 ## JavaScript Events
 
 TerraView uses JavaScript events to provide interactive functionality:
