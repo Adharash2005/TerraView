@@ -1,0 +1,1013 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Institute for Global Conflict — International Risk & Diplomacy Index</title>
+  <meta name="description" content="An open quantitative platform monitoring state friction, territorial dispute trajectories, peace negotiations, and early-warning conflict prediction indicators across 194 countries.">
+  <meta name="keywords" content="international conflict analysis, geopolitical risk, peace negotiations, conflict prediction, diplomatic research, global security">
+  <meta property="og:title" content="Conflict, Mapped. — Institute for Global Conflict">
+  <meta property="og:description" content="Quantitative geopolitical risk and diplomacy index. Monitor active conflict zones, peace treaties, and diplomatic escalation indicators.">
+  <meta property="og:type" content="website">
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            charcoal: {
+              50: '#f8fafc',
+              100: '#f1f5f9',
+              700: '#334155',
+              800: '#1e293b',
+              900: '#0f172a',
+            },
+            olive: {
+              50: '#f4f6f4',
+              100: '#e6eae6',
+              600: '#526655',
+              700: '#435446',
+              800: '#3b483c',
+              900: '#263228',
+            },
+            rust: {
+              50: '#fdf2f2',
+              100: '#fde8e8',
+              600: '#b83232',
+              700: '#9e2a2b',
+              800: '#7a2021',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Custom Stylesheet -->
+  <link rel="stylesheet" href="styles.css">
+
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Three.js CDN for Lightweight 3D Interactive Globe -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+</head>
+<body class="bg-white text-slate-900 antialiased selection:bg-slate-200 selection:text-slate-900">
+
+  <!-- Top Announcement & Radar Control Banner -->
+  <div class="bg-slate-900 text-slate-300 text-xs py-2 px-4 border-b border-slate-800">
+    <div class="max-w-7xl mx-auto flex justify-between items-center">
+      <div class="flex items-center space-x-3">
+        <span class="inline-block w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+        <span class="font-medium tracking-wide text-slate-200">GLOBAL CONFLICT MONITOR · 2026 EDITION</span>
+        <span class="hidden md:inline text-slate-600">|</span>
+        <span class="hidden md:inline text-slate-400">Quantitative Geopolitical Risk & Peace Index</span>
+      </div>
+      <div class="flex items-center space-x-4 text-slate-400 text-xs">
+        <span id="sessionStatusBadge" class="hidden sm:inline-flex items-center space-x-1.5 bg-slate-800 px-2.5 py-0.5 rounded text-slate-300 border border-slate-700">
+          <i data-lucide="clock" class="w-3 h-3 text-slate-400"></i>
+          <span id="sessionTimerText">Session Active</span>
+        </span>
+        <button id="navProximityBtn" class="hover:text-white transition flex items-center space-x-1.5 cursor-pointer font-medium text-slate-300">
+          <i data-lucide="compass" class="w-3.5 h-3.5 text-rust-600"></i>
+          <span>Proximity Radar</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Header Navigation -->
+  <header id="mainHeader" class="sticky top-0 z-40 bg-white/95 backdrop-blur border-b border-slate-200 transition-all duration-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-16">
+        
+        <!-- Brand Logo & Title -->
+        <a href="#" class="flex items-center space-x-3 group">
+          <div class="w-9 h-9 bg-slate-900 text-white rounded flex items-center justify-center font-serif font-bold text-lg group-hover:bg-olive-800 transition shadow-sm">
+            GC
+          </div>
+          <div>
+            <span class="font-serif text-lg font-bold tracking-tight text-slate-900 block leading-none">INSTITUTE FOR GLOBAL CONFLICT</span>
+            <span class="text-[10px] tracking-widest text-slate-500 uppercase block font-semibold mt-0.5">International Risk & Peace Research</span>
+          </div>
+        </a>
+
+        <!-- Main Navigation Links -->
+        <nav class="hidden lg:flex items-center space-x-8 text-sm font-semibold text-slate-700">
+          <a href="#hero" class="hover:text-slate-900 transition">Overview</a>
+          <a href="#globeSection" class="hover:text-slate-900 transition">3D Map</a>
+          <a href="#dimensions" class="hover:text-slate-900 transition">Dimensions</a>
+          <a href="#dispatches" class="hover:text-slate-900 transition">Dispatches</a>
+          <a href="#riskCanvas" class="hover:text-slate-900 transition">Risk Projection</a>
+          <a href="#researchSection" class="hover:text-slate-900 transition">Research Model</a>
+          <a href="#deckSection" class="hover:text-slate-900 transition">Strategic Deck</a>
+        </nav>
+
+        <!-- Right Quick Actions -->
+        <div class="flex items-center space-x-3">
+          <button id="openDossierBtn" class="relative inline-flex items-center space-x-2 bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-semibold py-2 px-3 rounded-md border border-slate-300 transition">
+            <i data-lucide="bookmark" class="w-3.5 h-3.5 text-olive-700"></i>
+            <span>Saved Dossiers</span>
+            <span id="savedCountBadge" class="ml-1 bg-rust-700 text-white text-[10px] font-bold w-4 h-4 rounded-full inline-flex items-center justify-center">0</span>
+          </button>
+          
+          <!-- Primary CTA Button in Header -->
+          <a href="#researchSection" class="inline-flex items-center space-x-2 bg-slate-900 hover:bg-olive-800 text-white text-xs font-semibold py-2 px-3.5 rounded-md shadow-sm transition">
+            <span>Explore the Research</span>
+            <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- HERO SECTION: Dominant H1 + High Contrast CTA + Interactive 3D Globe -->
+    <section id="hero" class="relative min-h-[calc(100vh-5rem)] bg-white border-b border-slate-200 flex flex-col justify-between pt-10 pb-14 overflow-hidden">
+      
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full z-10">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+          
+          <!-- Left Column: Primary Copy & Main H1 -->
+          <div class="lg:col-span-6 space-y-6">
+            <div class="inline-flex items-center space-x-2 px-3.5 py-1 bg-slate-100 border border-slate-200 text-slate-800 text-xs font-bold rounded-full">
+              <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+              <span class="uppercase tracking-wider">Open Quantitative Peace & Conflict Platform</span>
+            </div>
+
+            <!-- Strongest Visual Element: Prominent H1 -->
+            <h1 class="font-serif text-5xl sm:text-6xl lg:text-7xl font-extrabold text-slate-900 leading-[1.05] tracking-tight">
+              Global Conflict <br class="hidden sm:inline">& Diplomacy Index
+            </h1>
+
+            <!-- Concise Value Proposition -->
+            <p class="text-base sm:text-lg text-slate-600 max-w-xl font-normal leading-relaxed">
+              Monitoring state friction, territorial dispute trajectories, multilateral peace treaties, and early-warning conflict prediction indicators across 194 countries.
+            </p>
+
+            <!-- Prominent Primary CTA + Visually Quieter Secondary Action -->
+            <div class="flex flex-wrap items-center gap-4 pt-2">
+              <!-- PRIMARY CTA: Solid high-contrast filled button -->
+              <a href="#researchSection" class="inline-flex items-center justify-center space-x-2.5 bg-slate-900 hover:bg-olive-800 text-white text-sm font-semibold px-7 py-3.5 rounded-lg shadow-md hover:shadow-lg transition-all transform hover:-translate-y-0.5">
+                <span>Explore the Research</span>
+                <i data-lucide="arrow-right" class="w-4 h-4"></i>
+              </a>
+              
+              <!-- SECONDARY ACTION: Visually quieter neutral outline -->
+              <button id="heroProximityTrigger" class="inline-flex items-center justify-center space-x-2 bg-white hover:bg-slate-50 text-slate-700 text-sm font-semibold px-5 py-3.5 rounded-lg border border-slate-300 transition">
+                <i data-lucide="compass" class="w-4 h-4 text-rust-700"></i>
+                <span>Regional Radar</span>
+              </button>
+            </div>
+
+            <!-- Proximity Radar Result Display -->
+            <div id="proximityAlertBox" class="hidden mt-4 p-4 bg-slate-50 border border-slate-200 rounded-lg text-xs space-y-1.5 shadow-sm">
+              <div class="flex items-center justify-between font-semibold text-slate-900">
+                <span class="flex items-center space-x-1.5">
+                  <i data-lucide="map-pin" class="w-4 h-4 text-rust-700"></i>
+                  <span>Geographic Proximity Analysis</span>
+                </span>
+                <span id="userCoordinatesText" class="text-[11px] text-slate-500 font-mono"></span>
+              </div>
+              <p id="proximityResultText" class="text-slate-600 leading-normal"></p>
+            </div>
+
+            <!-- Core Quantitative Metrics Bar -->
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-6 pt-6 border-t border-slate-100">
+              <div>
+                <span class="block font-serif text-3xl font-extrabold text-slate-900">194</span>
+                <span class="text-xs text-slate-500 font-semibold uppercase tracking-wider">Countries Monitored</span>
+              </div>
+              <div>
+                <span class="block font-serif text-3xl font-extrabold text-rust-700">34</span>
+                <span class="text-xs text-slate-500 font-semibold uppercase tracking-wider">Active Hotspots</span>
+              </div>
+              <div>
+                <span class="block font-serif text-3xl font-extrabold text-olive-700">12</span>
+                <span class="text-xs text-slate-500 font-semibold uppercase tracking-wider">Peace Treaties</span>
+              </div>
+              <div>
+                <span class="block font-serif text-3xl font-extrabold text-slate-900">88.4%</span>
+                <span class="text-xs text-slate-500 font-semibold uppercase tracking-wider">Model Accuracy</span>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Right Column: Interactive 3D Globe Container -->
+          <div id="globeSection" class="lg:col-span-6 relative flex justify-center items-center">
+            <div id="globeContainer" class="relative w-full aspect-square max-w-[500px] bg-slate-50 rounded-2xl border border-slate-200 shadow-md flex items-center justify-center overflow-hidden cursor-grab active:cursor-grabbing">
+              
+              <!-- Three.js Canvas -->
+              <canvas id="globeCanvas" class="w-full h-full block"></canvas>
+              
+              <!-- Hotspot Overlay Pill -->
+              <div class="absolute top-4 left-4 z-10 bg-white/95 backdrop-blur px-3 py-1.5 rounded-full border border-slate-200 text-[11px] font-semibold text-slate-700 flex items-center space-x-2 shadow-sm">
+                <span class="w-2 h-2 rounded-full bg-rust-600 animate-ping"></span>
+                <span>Real-time Crisis Nodes</span>
+              </div>
+
+              <!-- Hotspot Direct Controls -->
+              <div class="absolute bottom-4 left-4 z-10 bg-white/95 backdrop-blur px-3.5 py-2.5 rounded-lg border border-slate-200 text-[11px] space-y-1.5 shadow-sm">
+                <div class="text-slate-500 text-[10px] uppercase tracking-wider font-bold">Focus Active Region</div>
+                <div class="flex items-center space-x-2">
+                  <button class="globe-focus-btn px-2.5 py-1 bg-slate-100 hover:bg-slate-200 rounded text-slate-800 text-[11px] font-semibold transition" data-lat="50.45" data-lng="30.52" data-name="Eastern Europe (Kyiv)">Kyiv</button>
+                  <button class="globe-focus-btn px-2.5 py-1 bg-slate-100 hover:bg-slate-200 rounded text-slate-800 text-[11px] font-semibold transition" data-lat="31.5" data-lng="34.46" data-name="Middle East (Gaza)">Middle East</button>
+                  <button class="globe-focus-btn px-2.5 py-1 bg-slate-100 hover:bg-slate-200 rounded text-slate-800 text-[11px] font-semibold transition" data-lat="23.7" data-lng="121.0" data-name="Taiwan Strait">Taiwan</button>
+                </div>
+              </div>
+
+              <div class="absolute bottom-4 right-4 z-10 bg-slate-900/80 text-white px-2.5 py-1 rounded text-[10px] font-mono">
+                Drag to Rotate · Scroll to Zoom
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Scannable Mission Highlights Bar -->
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full mt-12 pt-8 border-t border-slate-100">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+          <div class="flex items-start space-x-3">
+            <div class="p-2 bg-slate-100 text-slate-800 rounded-lg shrink-0 mt-0.5">
+              <i data-lucide="shield-alert" class="w-4 h-4 text-rust-700"></i>
+            </div>
+            <div>
+              <h4 class="font-bold text-xs text-slate-900 uppercase tracking-wider">Global Friction</h4>
+              <p class="text-xs text-slate-500 leading-normal mt-0.5">Continuous assessment of state military posture and border perimeter alerts.</p>
+            </div>
+          </div>
+
+          <div class="flex items-start space-x-3">
+            <div class="p-2 bg-slate-100 text-slate-800 rounded-lg shrink-0 mt-0.5">
+              <i data-lucide="handshake" class="w-4 h-4 text-olive-700"></i>
+            </div>
+            <div>
+              <h4 class="font-bold text-xs text-slate-900 uppercase tracking-wider">Diplomatic Treaties</h4>
+              <p class="text-xs text-slate-500 leading-normal mt-0.5">Tracking cease-fire compliance and multilateral mediation negotiations.</p>
+            </div>
+          </div>
+
+          <div class="flex items-start space-x-3">
+            <div class="p-2 bg-slate-100 text-slate-800 rounded-lg shrink-0 mt-0.5">
+              <i data-lucide="droplet" class="w-4 h-4 text-slate-700"></i>
+            </div>
+            <div>
+              <h4 class="font-bold text-xs text-slate-900 uppercase tracking-wider">Resource Impact</h4>
+              <p class="text-xs text-slate-500 leading-normal mt-0.5">Evaluating water basin rights, energy choke points, and mineral security.</p>
+            </div>
+          </div>
+
+          <div class="flex items-start space-x-3">
+            <div class="p-2 bg-slate-100 text-slate-800 rounded-lg shrink-0 mt-0.5">
+              <i data-lucide="heart-handshake" class="w-4 h-4 text-amber-700"></i>
+            </div>
+            <div>
+              <h4 class="font-bold text-xs text-slate-900 uppercase tracking-wider">Humanitarian Warning</h4>
+              <p class="text-xs text-slate-500 leading-normal mt-0.5">Monitoring civilian safety corridors and cross-border displacement flows.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- GLOBAL OVERVIEW: Crisis Monitor & Live Field Reports -->
+    <section id="overview" class="py-16 bg-slate-50 border-b border-slate-200">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <!-- Short, Bold H2 Section Division -->
+        <div class="flex flex-col md:flex-row md:items-end justify-between mb-10 pb-6 border-b border-slate-200">
+          <div>
+            <span class="text-xs font-bold uppercase tracking-widest text-olive-700">Real-time Intelligence</span>
+            <h2 class="font-serif text-3xl sm:text-4xl font-bold text-slate-900 mt-1">Crisis Monitor & Field Reports</h2>
+          </div>
+          
+          <!-- Live Interactive Search Box (JS `input` event & length label) -->
+          <div class="mt-4 md:mt-0 w-full md:w-80">
+            <label for="searchInput" class="block text-xs font-semibold text-slate-700 mb-1.5 flex justify-between">
+              <span>Search Conflict Database</span>
+              <span id="charCountLabel" class="text-slate-400 font-mono text-[11px]">0 / 40 chars</span>
+            </label>
+            <div class="relative">
+              <input type="text" id="searchInput" maxlength="40" placeholder="Filter region, treaty, or crisis..." class="w-full pl-9 pr-3 py-2 bg-white border border-slate-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-slate-900 focus:border-transparent transition shadow-sm" />
+              <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3 top-2.5"></i>
+            </div>
+          </div>
+        </div>
+
+        <!-- Main Grid Layout with Articles & Aside Sidebar -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+          
+          <!-- Conflict Reports Cards Grid -->
+          <div class="lg:col-span-8">
+            <div id="reportsGrid" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              
+              <!-- Report Card 1 -->
+              <article class="editorial-card p-6 rounded-lg bg-white flex flex-col justify-between" data-keywords="eastern europe ukraine territorial sovereignty nato russia">
+                <div>
+                  <div class="flex justify-between items-center text-xs text-slate-500 mb-3">
+                    <span class="px-2.5 py-0.5 bg-rust-50 text-rust-700 border border-rust-100 font-bold rounded">High Alert</span>
+                    <time datetime="2026-09-28" class="font-mono text-slate-400">SEP 28, 2026</time>
+                  </div>
+                  <h3 class="font-serif text-xl font-bold text-slate-900 mb-2 leading-snug">Eastern European Strategic Friction</h3>
+                  <p class="text-sm text-slate-600 mb-4 leading-relaxed line-clamp-3">
+                    Monitoring military troop movements, artillery saturation indices, and diplomatic channel readiness along the Dnieper axis.
+                  </p>
+                </div>
+                <div class="pt-4 border-t border-slate-100 flex justify-between items-center text-xs font-semibold text-slate-800">
+                  <span>Region: Eastern Europe</span>
+                  <span class="text-rust-700 font-bold">Risk Score: 8.8 / 10</span>
+                </div>
+              </article>
+
+              <!-- Report Card 2 -->
+              <article class="editorial-card p-6 rounded-lg bg-white flex flex-col justify-between" data-keywords="middle east gaza red sea maritime diplomacy peace summit">
+                <div>
+                  <div class="flex justify-between items-center text-xs text-slate-500 mb-3">
+                    <span class="px-2.5 py-0.5 bg-amber-50 text-amber-800 border border-amber-100 font-bold rounded">Escalating</span>
+                    <time datetime="2026-09-25" class="font-mono text-slate-400">SEP 25, 2026</time>
+                  </div>
+                  <h3 class="font-serif text-xl font-bold text-slate-900 mb-2 leading-snug">Levant Maritime & Border Security</h3>
+                  <p class="text-sm text-slate-600 mb-4 leading-relaxed line-clamp-3">
+                    Multilateral negotiations surrounding maritime corridor protection and cease-fire compliance verification in the Red Sea.
+                  </p>
+                </div>
+                <div class="pt-4 border-t border-slate-100 flex justify-between items-center text-xs font-semibold text-slate-800">
+                  <span>Region: Middle East</span>
+                  <span class="text-amber-800 font-bold">Risk Score: 7.9 / 10</span>
+                </div>
+              </article>
+
+              <!-- Report Card 3 -->
+              <article class="editorial-card p-6 rounded-lg bg-white flex flex-col justify-between" data-keywords="indo pacific taiwan strait maritime naval trade supply chain">
+                <div>
+                  <div class="flex justify-between items-center text-xs text-slate-500 mb-3">
+                    <span class="px-2.5 py-0.5 bg-olive-50 text-olive-800 border border-olive-100 font-bold rounded">Monitored</span>
+                    <time datetime="2026-09-21" class="font-mono text-slate-400">SEP 21, 2026</time>
+                  </div>
+                  <h3 class="font-serif text-xl font-bold text-slate-900 mb-2 leading-snug">Indo-Pacific Supply Chain Disruption</h3>
+                  <p class="text-sm text-slate-600 mb-4 leading-relaxed line-clamp-3">
+                    Assessment of naval transit exercises in the Taiwan Strait and potential economic spillover across semiconductor shipping routes.
+                  </p>
+                </div>
+                <div class="pt-4 border-t border-slate-100 flex justify-between items-center text-xs font-semibold text-slate-800">
+                  <span>Region: Indo-Pacific</span>
+                  <span class="text-olive-700 font-bold">Risk Score: 6.4 / 10</span>
+                </div>
+              </article>
+
+              <!-- Report Card 4 -->
+              <article class="editorial-card p-6 rounded-lg bg-white flex flex-col justify-between" data-keywords="horn of africa sudan humanitarian peace treaty UN peacekeepers">
+                <div>
+                  <div class="flex justify-between items-center text-xs text-slate-500 mb-3">
+                    <span class="px-2.5 py-0.5 bg-blue-50 text-blue-800 border border-blue-100 font-bold rounded">Diplomatic Talks</span>
+                    <time datetime="2026-09-18" class="font-mono text-slate-400">SEP 18, 2026</time>
+                  </div>
+                  <h3 class="font-serif text-xl font-bold text-slate-900 mb-2 leading-snug">Sudanese Peace Initiative</h3>
+                  <p class="text-sm text-slate-600 mb-4 leading-relaxed line-clamp-3">
+                    International mediator summit in Geneva evaluating cease-fire monitoring protocols and humanitarian corridors.
+                  </p>
+                </div>
+                <div class="pt-4 border-t border-slate-100 flex justify-between items-center text-xs font-semibold text-slate-800">
+                  <span>Region: Sub-Saharan Africa</span>
+                  <span class="text-blue-800 font-bold">Risk Score: 7.2 / 10</span>
+                </div>
+              </article>
+
+            </div>
+            
+            <div id="noMatchMessage" class="hidden text-center py-12 bg-white rounded-lg border border-slate-200 text-slate-500 text-sm">
+              No conflict reports matched your exact query filter.
+            </div>
+          </div>
+
+          <!-- Sidebar: Diplomatic Ticker Bulletins -->
+          <aside class="lg:col-span-4 space-y-6">
+            <div class="bg-white p-6 rounded-lg border border-slate-200 shadow-sm">
+              <h3 class="font-serif text-lg font-bold text-slate-900 mb-4 pb-3 border-b border-slate-100 flex items-center justify-between">
+                <span>Diplomatic Bulletins</span>
+                <i data-lucide="radio" class="w-4 h-4 text-rust-700 animate-pulse"></i>
+              </h3>
+
+              <div class="space-y-4 text-xs">
+                <div class="pb-3 border-b border-slate-100">
+                  <span class="text-[10px] font-mono text-slate-400 block mb-1">09:42 UTC · GENEVA</span>
+                  <a href="#dispatches" class="font-semibold text-slate-800 hover:text-rust-700 transition block leading-snug">UN Security Council releases preliminary framework on cyber-conflict boundaries.</a>
+                </div>
+
+                <div class="pb-3 border-b border-slate-100">
+                  <span class="text-[10px] font-mono text-slate-400 block mb-1">07:15 UTC · VIENNA</span>
+                  <a href="#dispatches" class="font-semibold text-slate-800 hover:text-rust-700 transition block leading-snug">IAEA completes verification inspection of regional nuclear monitoring sites.</a>
+                </div>
+
+                <div>
+                  <span class="text-[10px] font-mono text-slate-400 block mb-1">YESTERDAY · NEW YORK</span>
+                  <a href="#dispatches" class="font-semibold text-slate-800 hover:text-rust-700 transition block leading-snug">General Assembly votes on resolution regarding displaced civilian protection.</a>
+                </div>
+              </div>
+            </div>
+
+            <!-- Methodology Callout -->
+            <div class="bg-slate-900 text-white p-6 rounded-lg shadow-md">
+              <span class="text-[10px] uppercase font-bold tracking-wider text-slate-400 block mb-1">Methodology Overview</span>
+              <h4 class="font-serif text-lg font-bold mb-2">Quantitative Conflict Modeling</h4>
+              <p class="text-xs text-slate-300 leading-relaxed mb-4">
+                Integrating geographic intelligence data, economic sanction indices, and multilateral treaty history to evaluate real-time escalation vectors.
+              </p>
+              <a href="#riskCanvas" class="inline-flex items-center space-x-1.5 text-xs font-semibold text-white hover:text-slate-300 transition">
+                <span>View Risk Trajectory</span>
+                <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+              </a>
+            </div>
+          </aside>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- CONFLICT DIMENSIONS: Mouseover / Mouseout Event Cards -->
+    <section id="dimensions" class="py-16 bg-white border-b border-slate-200">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <div class="max-w-2xl mb-10">
+          <span class="text-xs font-bold uppercase tracking-widest text-olive-700">Analytical Framework</span>
+          <h2 class="font-serif text-3xl sm:text-4xl font-bold text-slate-900 mt-1">Conflict Dimensions</h2>
+          <p class="text-sm text-slate-600 mt-2">
+            Hover over each dimension to inspect dynamic escalation metrics and quantitative baseline vectors.
+          </p>
+        </div>
+
+        <!-- 4 Dimension Cards (JS `mouseover` & `mouseout` handlers) -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          
+          <!-- Card 1 -->
+          <div class="dimension-card editorial-card p-6 rounded-lg bg-white border border-slate-200 cursor-pointer relative overflow-hidden" data-dimension="sovereignty">
+            <div class="w-10 h-10 rounded-lg bg-slate-100 flex items-center justify-center text-slate-800 mb-4 transition-colors duration-200 icon-box">
+              <i data-lucide="map" class="w-5 h-5"></i>
+            </div>
+            <h3 class="font-serif text-xl font-bold text-slate-900 mb-2">Territorial Sovereignty</h3>
+            <p class="text-xs text-slate-600 leading-relaxed card-desc">
+              Border demarcations, disputed exclusive economic zones, and military troop concentrations along frontier perimeters.
+            </p>
+
+            <div class="hover-details hidden mt-4 pt-4 border-t border-slate-100 text-xs space-y-1.5">
+              <div class="flex justify-between text-slate-500 font-mono">
+                <span>Index Weight:</span>
+                <span class="font-bold text-rust-700">38.4%</span>
+              </div>
+              <div class="flex justify-between text-slate-500 font-mono">
+                <span>Active Triggers:</span>
+                <span class="font-bold text-slate-800">18 Frontiers</span>
+              </div>
+              <div class="text-[11px] text-olive-800 font-medium pt-1">
+                Primary escalation vector in 62% of modern state conflicts.
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 2 -->
+          <div class="dimension-card editorial-card p-6 rounded-lg bg-white border border-slate-200 cursor-pointer relative overflow-hidden" data-dimension="resource">
+            <div class="w-10 h-10 rounded-lg bg-slate-100 flex items-center justify-center text-slate-800 mb-4 transition-colors duration-200 icon-box">
+              <i data-lucide="droplet" class="w-5 h-5"></i>
+            </div>
+            <h3 class="font-serif text-xl font-bold text-slate-900 mb-2">Resource Scarcity</h3>
+            <p class="text-xs text-slate-600 leading-relaxed card-desc">
+              Transboundary river basin rights, critical mineral deposits, and strategic energy maritime choke points.
+            </p>
+
+            <div class="hover-details hidden mt-4 pt-4 border-t border-slate-100 text-xs space-y-1.5">
+              <div class="flex justify-between text-slate-500 font-mono">
+                <span>Index Weight:</span>
+                <span class="font-bold text-rust-700">24.1%</span>
+              </div>
+              <div class="flex justify-between text-slate-500 font-mono">
+                <span>Active Triggers:</span>
+                <span class="font-bold text-slate-800">12 Water Basins</span>
+              </div>
+              <div class="text-[11px] text-olive-800 font-medium pt-1">
+                Key multiplier in Sub-Saharan & Middle Eastern tensions.
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 3 -->
+          <div class="dimension-card editorial-card p-6 rounded-lg bg-white border border-slate-200 cursor-pointer relative overflow-hidden" data-dimension="proxy">
+            <div class="w-10 h-10 rounded-lg bg-slate-100 flex items-center justify-center text-slate-800 mb-4 transition-colors duration-200 icon-box">
+              <i data-lucide="users" class="w-5 h-5"></i>
+            </div>
+            <h3 class="font-serif text-xl font-bold text-slate-900 mb-2">Proxy Engagement</h3>
+            <p class="text-xs text-slate-600 leading-relaxed card-desc">
+              Non-state armed factions, external power armament supply, and asymmetric cyber operations.
+            </p>
+
+            <div class="hover-details hidden mt-4 pt-4 border-t border-slate-100 text-xs space-y-1.5">
+              <div class="flex justify-between text-slate-500 font-mono">
+                <span>Index Weight:</span>
+                <span class="font-bold text-rust-700">22.8%</span>
+              </div>
+              <div class="flex justify-between text-slate-500 font-mono">
+                <span>Active Triggers:</span>
+                <span class="font-bold text-slate-800">29 Factions</span>
+              </div>
+              <div class="text-[11px] text-olive-800 font-medium pt-1">
+                Prolonging peace settlement duration by an average of 4.2 years.
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 4 -->
+          <div class="dimension-card editorial-card p-6 rounded-lg bg-white border border-slate-200 cursor-pointer relative overflow-hidden" data-dimension="sanctions">
+            <div class="w-10 h-10 rounded-lg bg-slate-100 flex items-center justify-center text-slate-800 mb-4 transition-colors duration-200 icon-box">
+              <i data-lucide="banknote" class="w-5 h-5"></i>
+            </div>
+            <h3 class="font-serif text-xl font-bold text-slate-900 mb-2">Economic Sanctions</h3>
+            <p class="text-xs text-slate-600 leading-relaxed card-desc">
+              Trade embargos, financial clearing bans, asset freezes, and retaliatory tariff barriers between major economies.
+            </p>
+
+            <div class="hover-details hidden mt-4 pt-4 border-t border-slate-100 text-xs space-y-1.5">
+              <div class="flex justify-between text-slate-500 font-mono">
+                <span>Index Weight:</span>
+                <span class="font-bold text-rust-700">14.7%</span>
+              </div>
+              <div class="flex justify-between text-slate-500 font-mono">
+                <span>Active Triggers:</span>
+                <span class="font-bold text-slate-800">4,200 Measures</span>
+              </div>
+              <div class="text-[11px] text-olive-800 font-medium pt-1">
+                Direct impact on bilateral trade volume & commodity pricing.
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- STRATEGIC RISK PROJECTION: Canvas API Visualization & JS `change` Event -->
+    <section id="riskCanvas" class="py-16 bg-slate-50 border-b border-slate-200">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <div class="flex flex-col md:flex-row md:items-end justify-between mb-8">
+          <div>
+            <span class="text-xs font-bold uppercase tracking-widest text-olive-700">Quantitative Modeling</span>
+            <h2 class="font-serif text-3xl sm:text-4xl font-bold text-slate-900 mt-1">Conflict Risk Trajectory</h2>
+          </div>
+
+          <!-- Region Dropdown Selector (`change` JS event) -->
+          <div class="mt-4 md:mt-0 flex items-center space-x-3">
+            <label for="regionSelect" class="text-xs font-bold text-slate-700">Select Region:</label>
+            <select id="regionSelect" class="bg-white border border-slate-300 text-slate-900 text-xs font-semibold rounded-md py-2 px-3 focus:ring-2 focus:ring-slate-900 focus:outline-none transition shadow-sm">
+              <option value="eastern_europe">Eastern Europe (Kyiv Axis)</option>
+              <option value="middle_east">Middle East & Red Sea Corridor</option>
+              <option value="indo_pacific">Indo-Pacific & Taiwan Strait</option>
+              <option value="sub_saharan">Sub-Saharan Africa & Horn</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Canvas Chart Container -->
+        <div class="bg-white p-6 rounded-lg border border-slate-200 shadow-sm">
+          <div class="flex justify-between items-center mb-4 text-xs font-mono text-slate-500">
+            <div class="flex items-center space-x-4">
+              <span class="flex items-center space-x-1.5">
+                <span class="w-3 h-0.5 bg-rust-700"></span>
+                <span class="text-slate-700 font-semibold">Escalation Index (2016–2026)</span>
+              </span>
+              <span class="flex items-center space-x-1.5">
+                <span class="w-3 h-0.5 bg-olive-700"></span>
+                <span class="text-slate-700 font-semibold">Diplomatic Intervention Baseline</span>
+              </span>
+            </div>
+            <span id="canvasStatusText" class="text-slate-400">Click chart points for detail</span>
+          </div>
+
+          <!-- HTML5 Canvas Element -->
+          <div class="relative w-full h-[320px]">
+            <canvas id="riskTrendCanvas" class="w-full h-full block cursor-crosshair"></canvas>
+          </div>
+
+          <div class="mt-4 pt-4 border-t border-slate-100 flex flex-wrap justify-between items-center text-xs text-slate-600">
+            <div>
+              <span class="font-bold text-slate-900">Current Forecast:</span>
+              <span id="forecastSummaryText" class="ml-1 font-medium">Eastern Europe trajectory indicates high escalation variance into Q4 2026.</span>
+            </div>
+            <div class="text-[11px] font-mono text-slate-400 mt-2 sm:mt-0">
+              Escalation Index · 2016–2026 Analysis Window
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- MEDIA & DISPATCHES: HTML5 Video & Storytelling Photography -->
+    <section id="dispatches" class="py-16 bg-white border-b border-slate-200">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <div class="max-w-2xl mb-10">
+          <span class="text-xs font-bold uppercase tracking-widest text-olive-700">Diplomatic Documentation</span>
+          <h2 class="font-serif text-3xl sm:text-4xl font-bold text-slate-900 mt-1">Global Affairs Dispatches</h2>
+          <p class="text-sm text-slate-600 mt-2">
+            Archival video documentations, diplomatic summit proceedings, and field briefing transcripts from international conflict resolution proceedings.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
+          
+          <!-- Left Column: HTML5 Video & Field Intelligence Card -->
+          <div class="lg:col-span-7 space-y-6">
+            <figure class="bg-white border border-slate-200 rounded-lg overflow-hidden shadow-sm">
+              <div class="relative aspect-video bg-slate-900">
+                <!-- HTML5 Video Element -->
+                <video id="dispatchVideo" class="w-full h-full object-cover" controls poster="https://images.unsplash.com/photo-1541872703-74c5e44368f9?auto=format&amp;fit=crop&amp;w=1200&amp;q=80">
+                  <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4" type="video/mp4">
+                  Your browser does not support the video tag.
+                </video>
+                
+                <div class="absolute top-3 left-3 video-badge text-white px-2.5 py-1 rounded text-[11px] font-mono flex items-center space-x-1.5">
+                  <span class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
+                  <span>UN Security Council Session</span>
+                </div>
+              </div>
+
+              <figcaption class="p-4 bg-white text-xs text-slate-600 border-t border-slate-100 flex justify-between items-center">
+                <span>Diplomatic address on crisis resolution protocols &amp; multilateral treaties.</span>
+                <span class="font-mono text-slate-400">UN Visual Archive</span>
+              </figcaption>
+            </figure>
+
+            <!-- Field Dispatch Intelligence Briefing Card -->
+            <div class="editorial-card p-6 rounded-lg bg-slate-50 border border-slate-200">
+              <div class="flex items-center space-x-3 mb-3">
+                <div class="w-8 h-8 rounded-full bg-slate-900 text-white flex items-center justify-center text-xs shadow-sm">
+                  <i data-lucide="file-text" class="w-4 h-4"></i>
+                </div>
+                <div>
+                  <h4 class="font-serif font-bold text-slate-900 text-base">Field Report: Geneva Mediator Briefing</h4>
+                  <p class="text-xs text-slate-500">Official dispatch from cease-fire verification team</p>
+                </div>
+              </div>
+
+              <div class="p-4 bg-white rounded border border-slate-200 text-xs text-slate-700 leading-relaxed font-sans shadow-sm">
+                &ldquo;Cease-fire observation teams report partial compliance along line of control. Demarcated demilitarized zones remain under continuous satellite monitoring and multilateral oversight.&rdquo;
+              </div>
+
+              <div class="mt-3 flex justify-between items-center text-[11px] text-slate-500 font-mono">
+                <span>Classification: UN-UNRESTRICTED</span>
+                <span>Filed: Geneva Peace Headquarters</span>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Right Column: Visual Photography Grid -->
+          <div class="lg:col-span-5 space-y-6">
+            <figure class="editorial-card rounded-lg overflow-hidden border border-slate-200">
+              <img src="https://images.unsplash.com/photo-1526470608268-f674ce90ebd4?auto=format&amp;fit=crop&amp;w=800&amp;q=80" alt="UN Diplomatic Summit" class="w-full h-48 object-cover" />
+              <figcaption class="p-4 bg-white text-xs text-slate-600">
+                <strong class="font-bold text-slate-900 block mb-0.5">International Diplomatic Summit</strong>
+                Delegates reviewing multilateral ceasefire frameworks during plenary session.
+              </figcaption>
+            </figure>
+
+            <figure class="editorial-card rounded-lg overflow-hidden border border-slate-200">
+              <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&amp;fit=crop&amp;w=800&amp;q=80" alt="Satellite Geographic Imagery" class="w-full h-48 object-cover" />
+              <figcaption class="p-4 bg-white text-xs text-slate-600">
+                <strong class="font-bold text-slate-900 block mb-0.5">Satellite Geographic Intelligence</strong>
+                High-resolution infrared monitoring of border troop infrastructure movement.
+              </figcaption>
+            </figure>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- RESEARCH MODEL & INTERACTION: Form Submission with JS `submit` Event -->
+    <section id="researchSection" class="py-16 bg-slate-50 border-b border-slate-200">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
+          
+          <!-- Left: Input Form Card -->
+          <div class="lg:col-span-6 bg-white p-8 rounded-lg border border-slate-200 shadow-sm">
+            <div class="mb-6">
+              <span class="text-xs font-bold uppercase tracking-widest text-olive-700">Predictive Modeling</span>
+              <h2 class="font-serif text-2xl font-bold text-slate-900 mt-1">Configure Research Focus</h2>
+              <p class="text-xs text-slate-600 mt-1">
+                Select analytical parameters to run the quantitative conflict trajectory evaluation model.
+              </p>
+            </div>
+
+            <!-- Form Element (JS `submit` event) -->
+            <form id="researchForm" class="space-y-4">
+              
+              <div>
+                <label for="focusRegion" class="block text-xs font-bold text-slate-700 mb-1">Target Geographic Region</label>
+                <select id="focusRegion" required class="w-full bg-slate-50 border border-slate-300 rounded-md text-xs py-2.5 px-3 font-semibold text-slate-900 focus:ring-2 focus:ring-slate-900 focus:outline-none transition">
+                  <option value="">-- Select Region --</option>
+                  <option value="Eastern Europe">Eastern Europe (Ukraine / Baltic)</option>
+                  <option value="Middle East">Middle East (Levant / Red Sea)</option>
+                  <option value="Indo-Pacific">Indo-Pacific (Taiwan Strait / South China Sea)</option>
+                  <option value="Sub-Saharan Africa">Sub-Saharan Africa (Sudan / Horn)</option>
+                </select>
+              </div>
+
+              <div class="grid grid-cols-2 gap-4">
+                <div>
+                  <label for="timeHorizon" class="block text-xs font-bold text-slate-700 mb-1">Time Horizon</label>
+                  <select id="timeHorizon" required class="w-full bg-slate-50 border border-slate-300 rounded-md text-xs py-2.5 px-3 font-semibold text-slate-900 focus:ring-2 focus:ring-slate-900 focus:outline-none transition">
+                    <option value="2015-2025">2015–2025 (Historical Baseline)</option>
+                    <option value="2026-2028" selected>2026–2028 (Short-Term Projection)</option>
+                    <option value="2029-2035">2029–2035 (Decadal Forecast)</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label for="conflictCategory" class="block text-xs font-bold text-slate-700 mb-1">Conflict Category</label>
+                  <select id="conflictCategory" required class="w-full bg-slate-50 border border-slate-300 rounded-md text-xs py-2.5 px-3 font-semibold text-slate-900 focus:ring-2 focus:ring-slate-900 focus:outline-none transition">
+                    <option value="Territorial Sovereignty">Territorial Sovereignty</option>
+                    <option value="Resource & Energy">Resource & Energy Competition</option>
+                    <option value="Proxy & Asymmetric">Proxy & Asymmetric Warfare</option>
+                    <option value="Economic Sanctions">Economic Sanctions & Blockades</option>
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label for="researchNotes" class="block text-xs font-bold text-slate-700 mb-1">Specific Research Hypothesis / Query</label>
+                <textarea id="researchNotes" rows="3" required minlength="10" placeholder="Describe specific crisis variables or treaty parameters..." class="w-full bg-slate-50 border border-slate-300 rounded-md text-xs p-3 text-slate-900 focus:ring-2 focus:ring-slate-900 focus:outline-none resize-none transition"></textarea>
+                <span id="formValidationHint" class="text-[11px] text-rust-700 hidden font-medium">Please enter at least 10 characters for your research hypothesis.</span>
+              </div>
+
+              <!-- High Contrast Form Submit CTA -->
+              <div class="pt-2 flex items-center justify-between">
+                <button type="submit" class="bg-slate-900 hover:bg-olive-800 text-white font-semibold text-xs py-3 px-6 rounded-md shadow-sm transition flex items-center space-x-2">
+                  <i data-lucide="play" class="w-3.5 h-3.5"></i>
+                  <span>Run Analysis Model</span>
+                </button>
+                <span class="text-[11px] font-mono text-slate-400">Session saved</span>
+              </div>
+
+            </form>
+          </div>
+
+          <!-- Right: Output Dossier Output Card -->
+          <div class="lg:col-span-6 bg-white p-8 rounded-lg border border-slate-200 shadow-sm flex flex-col justify-between min-h-[420px]">
+            <div>
+              <div class="flex items-center justify-between pb-4 border-b border-slate-100">
+                <div class="flex items-center space-x-2">
+                  <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+                  <span class="font-serif font-bold text-slate-900 text-lg">Model Output Dossier</span>
+                </div>
+                <span id="dossierTimestamp" class="text-[11px] font-mono text-slate-400">STATUS: READY</span>
+              </div>
+
+              <div id="dossierDefaultPlaceholder" class="py-16 text-center text-slate-400 space-y-3">
+                <i data-lucide="file-spreadsheet" class="w-10 h-10 mx-auto stroke-1 text-slate-300"></i>
+                <p class="text-xs">Configure research parameters on the left and click "Run Analysis Model" to evaluate the conflict trajectory dossier.</p>
+              </div>
+
+              <!-- Output Content Box -->
+              <div id="dossierContent" class="hidden pt-6 space-y-4">
+                <div class="p-3.5 bg-slate-50 border border-slate-200 rounded-md text-xs">
+                  <span class="text-[10px] font-mono text-slate-400 uppercase block">Selected Focus Parameters</span>
+                  <div id="dossierFocusSummary" class="font-serif font-semibold text-slate-900 text-sm mt-0.5"></div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                  <div class="p-3.5 bg-rust-50 border border-rust-100 rounded-md">
+                    <span class="text-[10px] font-bold text-rust-700 uppercase block">Escalation Probability</span>
+                    <span id="dossierRiskPercent" class="font-serif text-2xl font-bold text-rust-800"></span>
+                  </div>
+                  <div class="p-3.5 bg-olive-50 border border-olive-100 rounded-md">
+                    <span class="text-[10px] font-bold text-olive-800 uppercase block">Diplomatic Treaty Vector</span>
+                    <span id="dossierTreatyScore" class="font-serif text-2xl font-bold text-olive-900"></span>
+                  </div>
+                </div>
+
+                <div class="p-3.5 bg-slate-50 border border-slate-200 rounded-md text-xs">
+                  <span class="text-[10px] font-mono text-slate-400 uppercase block mb-1">Evaluated Research Hypothesis</span>
+                  <p id="dossierNotesResult" class="text-slate-700 italic font-sans"></p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Footer Action Bar inside Dossier -->
+            <div id="dossierActionFooter" class="hidden pt-4 border-t border-slate-100 flex items-center justify-between">
+              <button id="saveFocusToLocalBtn" class="bg-slate-900 hover:bg-olive-800 text-white font-semibold text-xs py-2 px-3.5 rounded-md transition flex items-center space-x-1.5 shadow-sm">
+                <i data-lucide="bookmark-plus" class="w-3.5 h-3.5"></i>
+                <span>Save to Dossiers</span>
+              </button>
+              <span id="saveFeedbackText" class="text-[11px] text-emerald-700 font-semibold hidden">Saved to Local Storage!</span>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- STRATEGIC PRIORITY MATRIX: HTML5 Native Drag & Drop API -->
+    <section id="deckSection" class="py-16 bg-white border-b border-slate-200">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <div class="max-w-2xl mb-10">
+          <span class="text-xs font-bold uppercase tracking-widest text-olive-700">Custom Priority Matrix</span>
+          <h2 class="font-serif text-3xl sm:text-4xl font-bold text-slate-900 mt-1">Strategic Analysis Deck</h2>
+          <p class="text-sm text-slate-600 mt-2">
+            Drag conflict indicators from the pool below into your priority matrix to synthesize a customized risk evaluation package.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          
+          <!-- Left: Available Draggable Indicators Pool -->
+          <div class="lg:col-span-5 bg-slate-50 p-6 rounded-lg border border-slate-200 shadow-sm">
+            <h3 class="font-serif font-bold text-slate-900 text-base mb-3 pb-2 border-b border-slate-200 flex items-center justify-between">
+              <span>Available Threat Indicators</span>
+              <span class="text-[11px] font-mono text-slate-400">Drag to target</span>
+            </h3>
+
+            <div class="space-y-3" id="draggablesContainer">
+              
+              <div class="draggable-item bg-white p-3.5 rounded-md border border-slate-200 shadow-sm flex items-center justify-between" draggable="true" data-id="ind-cyber" data-title="Asymmetric Cyber Warfare" data-cat="Security">
+                <div class="flex items-center space-x-3">
+                  <i data-lucide="grip-vertical" class="w-4 h-4 text-slate-400"></i>
+                  <div>
+                    <span class="font-bold text-xs text-slate-900 block">Asymmetric Cyber Warfare</span>
+                    <span class="text-[10px] text-slate-500">Critical Infrastructure Vulnerability</span>
+                  </div>
+                </div>
+                <span class="text-[10px] px-2 py-0.5 bg-rust-50 text-rust-700 rounded font-bold">High</span>
+              </div>
+
+              <div class="draggable-item bg-white p-3.5 rounded-md border border-slate-200 shadow-sm flex items-center justify-between" draggable="true" data-id="ind-refugee" data-title="Cross-Border Refugee Movements" data-cat="Humanitarian">
+                <div class="flex items-center space-x-3">
+                  <i data-lucide="grip-vertical" class="w-4 h-4 text-slate-400"></i>
+                  <div>
+                    <span class="font-bold text-xs text-slate-900 block">Cross-Border Refugee Movements</span>
+                    <span class="text-[10px] text-slate-500">Regional Humanitarian Displacement</span>
+                  </div>
+                </div>
+                <span class="text-[10px] px-2 py-0.5 bg-amber-50 text-amber-800 rounded font-bold">Medium</span>
+              </div>
+
+              <div class="draggable-item bg-white p-3.5 rounded-md border border-slate-200 shadow-sm flex items-center justify-between" draggable="true" data-id="ind-choke" data-title="Maritime Transit Chokepoints" data-cat="Economic">
+                <div class="flex items-center space-x-3">
+                  <i data-lucide="grip-vertical" class="w-4 h-4 text-slate-400"></i>
+                  <div>
+                    <span class="font-bold text-xs text-slate-900 block">Maritime Transit Chokepoints</span>
+                    <span class="text-[10px] text-slate-500">Trade Route & Tanker Disruption</span>
+                  </div>
+                </div>
+                <span class="text-[10px] px-2 py-0.5 bg-rust-50 text-rust-700 rounded font-bold">High</span>
+              </div>
+
+              <div class="draggable-item bg-white p-3.5 rounded-md border border-slate-200 shadow-sm flex items-center justify-between" draggable="true" data-id="ind-nuke" data-title="Nuclear Non-Proliferation Breach" data-cat="Strategic">
+                <div class="flex items-center space-x-3">
+                  <i data-lucide="grip-vertical" class="w-4 h-4 text-slate-400"></i>
+                  <div>
+                    <span class="font-bold text-xs text-slate-900 block">Nuclear Proliferation Friction</span>
+                    <span class="text-[10px] text-slate-500">Enrichment & Warhead Monitoring</span>
+                  </div>
+                </div>
+                <span class="text-[10px] px-2 py-0.5 bg-rust-50 text-rust-700 rounded font-bold">Severe</span>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Right: Priority Drop Zone -->
+          <div class="lg:col-span-7 bg-white p-6 rounded-lg border-2 border-dashed border-slate-300 drop-zone min-h-[320px] flex flex-col justify-between" id="priorityDropZone">
+            <div>
+              <div class="flex items-center justify-between pb-3 border-b border-slate-100 mb-4">
+                <div class="flex items-center space-x-2">
+                  <i data-lucide="layers" class="w-4 h-4 text-olive-700"></i>
+                  <h3 class="font-serif font-bold text-slate-900 text-base">Custom Strategic Deck</h3>
+                </div>
+                <span id="dropItemCount" class="text-xs font-mono text-slate-400">0 Indicators Added</span>
+              </div>
+
+              <div id="dropPlaceholder" class="py-12 text-center text-slate-400 space-y-2">
+                <i data-lucide="mouse-pointer-click" class="w-8 h-8 mx-auto stroke-1 text-slate-300"></i>
+                <p class="text-xs">Drag and drop indicators here to compose your custom analysis package.</p>
+              </div>
+
+              <div id="droppedItemsList" class="space-y-3">
+                <!-- Dropped items render dynamically -->
+              </div>
+            </div>
+
+            <div class="pt-4 border-t border-slate-100 flex justify-between items-center">
+              <button id="saveDeckBtn" class="bg-slate-900 hover:bg-olive-800 text-white font-semibold text-xs py-2.5 px-4 rounded-md transition flex items-center space-x-1.5 shadow-sm">
+                <i data-lucide="save" class="w-3.5 h-3.5"></i>
+                <span>Save Strategic Deck</span>
+              </button>
+              <button id="clearDeckBtn" class="text-xs text-slate-500 hover:text-rust-700 transition font-medium">
+                Reset Matrix
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+  </main>
+
+  <!-- SAVED DOSSIERS MODAL / DRAWER (Local Storage API) -->
+  <div id="dossiersDrawer" class="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-sm hidden" style="display:none;">
+    <div class="w-full max-w-md bg-white h-full shadow-2xl flex flex-col justify-between p-6 overflow-y-auto ml-auto">
+      <div>
+        <div class="flex items-center justify-between pb-4 border-b border-slate-200 mb-6">
+          <div class="flex items-center space-x-2">
+            <i data-lucide="bookmark" class="w-5 h-5 text-olive-700"></i>
+            <h3 class="font-serif font-bold text-xl text-slate-900">Saved Research Dossiers</h3>
+          </div>
+          <button id="closeDrawerBtn" class="p-1 text-slate-400 hover:text-slate-800 transition">
+            <i data-lucide="x" class="w-5 h-5"></i>
+          </button>
+        </div>
+
+        <div id="savedDossiersContainer" class="space-y-4">
+          <!-- Populated from Local Storage -->
+        </div>
+
+        <div id="emptySavedState" class="hidden text-center py-16 text-slate-400 space-y-2">
+          <i data-lucide="folder-open" class="w-10 h-10 mx-auto stroke-1 text-slate-300"></i>
+          <p class="text-xs">No saved dossiers found in Local Storage.</p>
+        </div>
+      </div>
+
+      <div class="pt-4 border-t border-slate-200 flex justify-between items-center">
+        <button id="clearLocalStorageBtn" class="text-xs text-rust-700 hover:text-rust-800 font-bold transition">
+          Clear All Saved Data
+        </button>
+        <span class="text-[10px] text-slate-400 font-mono">Persistent across sessions</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER: Institutional Research & Governance Platform -->
+  <footer class="bg-slate-900 text-slate-400 text-xs py-12 border-t border-slate-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-8 pb-12 border-b border-slate-800">
+        
+        <div class="md:col-span-5 space-y-3">
+          <div class="flex items-center space-x-2.5 text-white">
+            <div class="w-7 h-7 bg-olive-700 rounded flex items-center justify-center font-serif font-bold text-sm shadow-sm">GC</div>
+            <span class="font-serif font-bold text-base tracking-tight">INSTITUTE FOR GLOBAL CONFLICT</span>
+          </div>
+          <p class="text-slate-400 max-w-sm text-xs leading-relaxed">
+            Quantitative analysis, geopolitical threat assessment, and multilateral diplomatic conflict prediction model platform.
+          </p>
+          <div class="text-[11px] text-slate-400 font-mono pt-1">
+            Global Peace & Security Quantitative Research Division
+          </div>
+        </div>
+
+        <div class="md:col-span-3 space-y-2">
+          <span class="text-white text-xs font-bold uppercase tracking-wider block mb-2">Core Index Navigation</span>
+          <ul class="space-y-1.5 text-slate-400">
+            <li><a href="#hero" class="hover:text-white transition">Global Index Overview</a></li>
+            <li><a href="#globeSection" class="hover:text-white transition">3D Interactive Earth</a></li>
+            <li><a href="#dimensions" class="hover:text-white transition">Analytical Dimensions</a></li>
+            <li><a href="#riskCanvas" class="hover:text-white transition">Quantitative Risk Canvas</a></li>
+            <li><a href="#deckSection" class="hover:text-white transition">Strategic Priority Deck</a></li>
+          </ul>
+        </div>
+
+        <div class="md:col-span-4 space-y-2">
+          <span class="text-white text-xs font-bold uppercase tracking-wider block mb-2">Research Citation</span>
+          <p class="text-slate-400 text-[11px] leading-relaxed">
+            Data aggregated from open international peacekeeping registries, multilateral treaties, and geographic intelligence repositories. Model outputs updated continuously for policy research.
+          </p>
+          <div class="pt-2 text-slate-300 font-mono text-[11px]">
+            © 2026 Institute for Global Conflict Research.
+          </div>
+        </div>
+
+      </div>
+
+      <div class="pt-6 flex flex-col sm:flex-row justify-between items-center text-[11px] text-slate-400">
+        <span>Institute for Global Conflict — Open Quantitative Research Platform</span>
+        <span class="mt-2 sm:mt-0 font-mono">Verified Security Standards</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Geographic Boundaries Dataset -->
+  <script src="world-countries.js"></script>
+  <!-- Main JavaScript Application File -->
+  <script src="app.js"></script>
+</body>
+</html>
